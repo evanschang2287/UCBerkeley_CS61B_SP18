@@ -82,7 +82,24 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        if (A == null) {
+            return B;
+        }
+        else {
+            /**
+             * If we use A instead of making a temporary IntList aTail
+             * to go through the entire A list, we will lose the information
+             * of the initial IntList A because at that time, A will become
+             * the last node in the initial IntList A.
+             * */
+            IntList aTail = A;
+            while (aTail.rest != null) {
+                aTail = aTail.rest;
+            }
+            aTail.rest = B;
+        }
+
+        return A;
     }
 
     /**
@@ -90,8 +107,19 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
+        /**
+         * The first element in the final list will be the first element
+         * in list A. The catenate(A.rest, B) will go through the entire
+         * list A until it reaches the base case: A == null, and the whole
+         * list B will be returned and put at the end of list A.
+         */
         //TODO:  fill in method
-        return null;
+        if (A == null) {
+            return B;
+        }
+        else {
+            return new IntList(A.first, catenate(A.rest, B));
+        }
     }
 
 
