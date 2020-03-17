@@ -120,7 +120,7 @@ public class ArrayDeque<T> {
 
         return getRecursiveHelper(0, index);
     }
-
+/*
     public static void main(String[] args) {
         ArrayDeque<String> arr = new ArrayDeque<String>();
 
@@ -202,5 +202,5 @@ public class ArrayDeque<T> {
 
     }
 
-
+ */
 }
