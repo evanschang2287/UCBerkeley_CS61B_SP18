@@ -16,7 +16,8 @@ public class ArrayDeque<T> {
         if (nextFirst > nextLast) {
             System.arraycopy(items, (nextFirst + 1) % items.length, temp, 0, size);
         } else {
-            System.arraycopy(items, (nextFirst + 1) % items.length, temp, 0, items.length - (nextFirst + 1));
+            System.arraycopy(items, (nextFirst + 1) % items.length, temp,
+                    0, items.length - (nextFirst + 1));
             System.arraycopy(items, 0, temp, items.length - (nextFirst + 1), nextLast);
         }
         items = temp;
@@ -27,7 +28,8 @@ public class ArrayDeque<T> {
     private void reduce(int capacity) {
         T[] temp = (T[]) new Object[capacity];
         if (nextFirst > nextLast) {
-            System.arraycopy(items, (nextFirst + 1) % items.length, temp, 0, items.length - (nextFirst + 1));
+            System.arraycopy(items, (nextFirst + 1) % items.length, temp,
+                    0, items.length - (nextFirst + 1));
             System.arraycopy(items, 0, temp, items.length - (nextFirst + 1), nextLast);
         } else {
             System.arraycopy(items, (nextFirst + 1) % items.length, temp, 0, size);
