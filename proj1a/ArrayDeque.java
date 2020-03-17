@@ -25,10 +25,23 @@ public class ArrayDeque<T> {
         nextLast = size;
     }
 
+    public void reduce(int capacity) {
+        T[] temp = (T[]) new Object[capacity];
+        if (nextFirst > nextLast) {
+            System.arraycopy(items, (nextFirst + 1) % items.length, temp, 0, items.length - (nextFirst + 1));
+            System.arraycopy(items, 0, temp, items.length - (nextFirst + 1), nextLast);
+        }
+        else {
+            System.arraycopy(items, (nextFirst + 1) % items.length, temp, 0, size);
+        }
+        items = temp;
+        nextFirst = items.length - 1;
+        nextLast = size;
+    }
+
     /** addFirst will add the item at position nextFirst */
     public void addFirst(T item) {
-        if (isSparse()) resize(items.length / 2);
-        if (isFull())   resize(items.length * 2);
+        if (isFull()) resize(items.length * 2);
 
         items[nextFirst] = item;
         nextFirst = (nextFirst - 1 + items.length) % items.length;
@@ -37,8 +50,7 @@ public class ArrayDeque<T> {
 
     /** addLast will add the item at position nextLast */
     public void addLast(T item) {
-        if (isSparse()) resize(items.length / 2);
-        if (isFull())   resize(items.length * 2);
+        if (isFull()) resize(items.length * 2);
 
         items[nextLast] = item;
         nextLast = (nextLast + 1) % items.length;
@@ -78,6 +90,8 @@ public class ArrayDeque<T> {
         nextFirst = (nextFirst + 1) % items.length;
         size -= 1;
 
+        if (isSparse()) reduce(items.length / 2);
+
         return removed;
     }
 
@@ -86,6 +100,8 @@ public class ArrayDeque<T> {
         items[(nextLast - 1 + items.length) % items.length] = null;
         nextLast = (nextLast - 1 + items.length) % items.length;
         size -= 1;
+
+        if (isSparse()) reduce(items.length / 2);
 
         return removed;
     }
@@ -104,63 +120,81 @@ public class ArrayDeque<T> {
 
         return getRecursiveHelper(0, index);
     }
-/*
+
     public static void main(String[] args) {
         ArrayDeque<String> arr = new ArrayDeque<String>();
 
         arr.addLast("a");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addLast("b");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addFirst("c");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addLast("d");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addLast("e");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addFirst("f");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addFirst("g");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addLast("h");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.addFirst("i");
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeLast();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeLast();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeFirst();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeFirst();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeLast();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeFirst();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeFirst();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeLast();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         arr.removeFirst();
         System.out.print("nF = " + arr.nextFirst + ", nL = " + arr.nextLast + ", size = " + arr.size + "\n");
+        arr.printDeque();
 
         System.out.print(arr.isEmpty());
 
@@ -168,5 +202,5 @@ public class ArrayDeque<T> {
 
     }
 
- */
+
 }
