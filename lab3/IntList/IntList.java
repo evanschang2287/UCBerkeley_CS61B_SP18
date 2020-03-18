@@ -11,11 +11,11 @@ public class IntList {
     /**
      * First element of list.
      */
-    public int first;
+    private int first;
     /**
      * Remaining elements of list.
      */
-    public IntList rest;
+    private IntList rest;
 
     /**
      * A List with first FIRST0 and rest REST0.
@@ -80,7 +80,6 @@ public class IntList {
      */
 
     public static IntList dcatenate(IntList A, IntList B) {
-        //TODO:  fill in method
         if (A == null) {
             return B;
         } else {
@@ -111,7 +110,6 @@ public class IntList {
          * list A until it reaches the base case: A == null, and the whole
          * list B will be returned and put at the end of list A.
          */
-        //TODO:  fill in method
         if (A == null) {
             return B;
         } else {
@@ -183,7 +181,7 @@ public class IntList {
                 return false;
             }
         }
-        if (p != null|| L != null) {
+        if (p != null || L != null) {
             return false;
         }
         return true;
@@ -257,6 +255,10 @@ public class IntList {
     }
 
     public static IntList reverse(IntList A) {
+        if (A == null) {
+            return null;
+        }
+
         IntList previous = null;
         IntList current = A;
         IntList preceding = current.rest;

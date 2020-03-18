@@ -73,6 +73,8 @@ public class IntListTest {
         IntList reversedA = IntList.reverse(testA);
         IntList expected = IntList.of(6, 5, 4, 3, 2, 1);
         IntList B = null;
+        IntList testB = IntList.of(1);
+        IntList reversedB = IntList.reverse(testB);
 
         assertEquals(expected, reversedA); /** test reversed list */
         assertEquals(B, null);
