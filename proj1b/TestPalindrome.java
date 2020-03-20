@@ -18,20 +18,34 @@ public class TestPalindrome {
 
     @Test
     public void testIsPalindrome() {
-        boolean result1 = palindrome.isPalindrome("racecar");
-        boolean result2 = palindrome.isPalindrome("noon");
-        boolean result3 = palindrome.isPalindrome("horse");
-        boolean result4 = palindrome.isPalindrome("rancor");
-        boolean result5 = palindrome.isPalindrome("aaaaab");
-        boolean result6 = palindrome.isPalindrome("");
-        boolean result7 = palindrome.isPalindrome("a");
+        assertTrue(palindrome.isPalindrome("racecar"));
+        assertTrue(palindrome.isPalindrome("noon"));
+        assertFalse(palindrome.isPalindrome("horse"));
+        assertFalse(palindrome.isPalindrome("rancor"));
+        assertFalse(palindrome.isPalindrome("aaaaab"));
+        assertTrue(palindrome.isPalindrome(""));
+        assertTrue(palindrome.isPalindrome("a"));
+    }
 
-        assertTrue(result1);
-        assertTrue(result2);
-        assertFalse(result3);
-        assertFalse(result4);
-        assertFalse(result5);
-        assertTrue(result6);
-        assertTrue(result7);
+    @Test
+    public void testIsPalindromeCCbyOne() {
+        CharacterComparator cc = new OffByOne();
+
+        assertTrue(palindrome.isPalindrome("", cc));
+        assertTrue(palindrome.isPalindrome("a", cc));
+        assertFalse(palindrome.isPalindrome("abc", cc));
+        assertTrue(palindrome.isPalindrome("flake", cc));
+        assertFalse(palindrome.isPalindrome("aacaa", cc));
+    }
+
+    @Test
+    public void testIsPalindromeCCbyN() {
+        CharacterComparator cc = new OffByN(3);
+
+        assertTrue(palindrome.isPalindrome("", cc));
+        assertTrue(palindrome.isPalindrome("a", cc));
+        assertFalse(palindrome.isPalindrome("abc", cc));
+        assertTrue(palindrome.isPalindrome("abaed", cc));
+        assertFalse(palindrome.isPalindrome("aacaa", cc));
     }
 }

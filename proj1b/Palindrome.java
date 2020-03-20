@@ -14,8 +14,7 @@ public class Palindrome {
             return true;
         }
 
-        Palindrome palindrome = new Palindrome();
-        Deque<Character> deque = palindrome.wordToDeque(word);
+        Deque<Character> deque = wordToDeque(word);
 
         for (int i = 0; i < word.length() / 2; i++) {
             if (deque.removeFirst() == deque.removeLast()) {
@@ -31,8 +30,7 @@ public class Palindrome {
             return true;
         }
 
-        Palindrome palindrome = new Palindrome();
-        Deque<Character> deque = palindrome.wordToDeque(word);
+        Deque<Character> deque = wordToDeque(word);
 
         for (int i = 0; i < word.length() / 2; i++) {
             if (cc.equalChars(deque.removeFirst(), deque.removeLast())) {
@@ -42,6 +40,4 @@ public class Palindrome {
         }
         return true;
     }
-
-
 }
