@@ -71,18 +71,21 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
 
     private class ARBIterator implements Iterator<T> {
         private int iter;
+        private int count;
 
         public ARBIterator() {
             iter = first;
+            count = 0;
         }
 
         public boolean hasNext() {
-            return rb[iter] != null;
+            return count < capacity;
         }
 
         public T next() {
             T returned = rb[iter];
             iter = (iter + 1) % rb.length;
+            count += 1;
 
             return returned;
         }
