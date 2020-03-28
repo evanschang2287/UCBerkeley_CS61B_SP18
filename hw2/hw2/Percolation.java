@@ -4,8 +4,8 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private boolean[][] grid;
-    private WeightedQuickUnionUF uf;
-    private WeightedQuickUnionUF uf_bottom;
+    private WeightedQuickUnionUF uf;        /** for isFull() */
+    private WeightedQuickUnionUF ufBottom;  /** for percolates(), prevent backwash */
 
     private int sitesCount;
     private int N;
@@ -25,7 +25,7 @@ public class Percolation {
         vBottom = N * N + 1;
         grid = new boolean[N][N];
         uf = new WeightedQuickUnionUF(N * N + 1);
-        uf_bottom = new WeightedQuickUnionUF(N * N + 2);
+        ufBottom = new WeightedQuickUnionUF(N * N + 2);
         setup();
     }
 
@@ -35,8 +35,8 @@ public class Percolation {
     private void setup() {
         for (int j = 0; j < N; j++) {
             uf.union(coorTo1D(0, j), vTop);
-            uf_bottom.union(coorTo1D(0, j), vTop);
-            uf_bottom.union(coorTo1D(N - 1, j), vBottom);
+            ufBottom.union(coorTo1D(0, j), vTop);
+            ufBottom.union(coorTo1D(N - 1, j), vBottom);
         }
     }
 
@@ -79,7 +79,7 @@ public class Percolation {
             int index2 = coorTo1D(row, col);
             if (validIndex(r, c) && isOpen(r, c)) {
                 uf.union(index1, index2);
-                uf_bottom.union(index1, index2);
+                ufBottom.union(index1, index2);
             }
         }
     }
@@ -106,7 +106,7 @@ public class Percolation {
         if (N == 1) {
             return isOpen(0, 0);
         } else {
-            return uf_bottom.connected(vTop, vBottom);
+            return ufBottom.connected(vTop, vBottom);
         }
     }
 
