@@ -41,8 +41,9 @@ public class PercolationStats {
         return mean() + 1.96 * stddev() / Math.sqrt(threshold.length);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         PercolationStats ps = new PercolationStats(30, 100, new PercolationFactory());
-        System.out.println("Confidence Interval: [" + ps.confidenceLow() + ", " + ps.confidenceHigh() + "]");
-    }
+        System.out.println("Confidence Interval: [" +
+                ps.confidenceLow() + ", " + ps.confidenceHigh() + "]");
+    }*/
 }

@@ -11,7 +11,7 @@ public class Percolation {
     private int vTop;     /** Virtual top sites that connects all the top sites. */
     private int vBottom;  /** Virtual bottom sites that connects all the bottom sites. */
 
-    private final static int[][] DIRECTION = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    private final int[][] DIRECTION = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
                                             /** top     down    left     right */
     public Percolation(int N) {
         if (N <= 0) {
@@ -75,13 +75,13 @@ public class Percolation {
         for (int[] dir : DIRECTION) {
             int r = row + dir[0];
             int c = col + dir[1];
+            int index1 = coorTo1D(r, c);
+            int index2 = coorTo1D(row, col);
             if (validIndex(r, c) && isOpen(r, c)) {
-                int index1 = coorTo1D(r, c);
-                int index2 = coorTo1D(row, col);
                 uf.union(index1, index2);
-                if (row == N - 1) {
-                    uf.union(index2, vBottom);
-                }
+            }
+            if (row == N - 1) {
+                uf.union(index2, vBottom);
             }
         }
     }
@@ -118,7 +118,8 @@ public class Percolation {
         p.print();
 
         testOpen(p, 0, 0);
-        testOpen(p, 1, 0);
+        testOpen(p, 1, 1);
+        testOpen(p, 0, 1);
     }
 
     private void print() {
