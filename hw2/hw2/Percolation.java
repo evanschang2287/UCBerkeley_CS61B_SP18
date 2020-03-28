@@ -5,6 +5,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private boolean[][] grid;
     private WeightedQuickUnionUF uf;
+    private WeightedQuickUnionUF uf_bottom;
 
     private int sitesCount;
     private int N;
@@ -23,20 +24,19 @@ public class Percolation {
         vTop = N * N;
         vBottom = N * N + 1;
         grid = new boolean[N][N];
-        uf = new WeightedQuickUnionUF(N * N + 2);
+        uf = new WeightedQuickUnionUF(N * N + 1);
+        uf_bottom = new WeightedQuickUnionUF(N * N + 2);
         setup();
     }
 
     /** Optimization:
-     *  Connect vTop to all the top row's elements.
-     *
-     *  Why don't we connect vBottom to all the bottom row's elements as well?
-     *  Ans: To prevent backwash!!!
+     *  Connect vTop to all the top row's elements and vBottom to all the bottom row's elements.
      */
     private void setup() {
         for (int j = 0; j < N; j++) {
             uf.union(coorTo1D(0, j), vTop);
-            //uf.union(coorTo1D(N - 1, j), vBottom);
+            uf_bottom.union(coorTo1D(0, j), vTop);
+            uf_bottom.union(coorTo1D(N - 1, j), vBottom);
         }
     }
 
@@ -79,9 +79,7 @@ public class Percolation {
             int index2 = coorTo1D(row, col);
             if (validIndex(r, c) && isOpen(r, c)) {
                 uf.union(index1, index2);
-            }
-            if (row == N - 1) {
-                uf.union(index2, vBottom);
+                uf_bottom.union(index1, index2);
             }
         }
     }
@@ -108,18 +106,21 @@ public class Percolation {
         if (N == 1) {
             return isOpen(0, 0);
         } else {
-            return uf.connected(vTop, vBottom);
+            return uf_bottom.connected(vTop, vBottom);
         }
     }
 
     public static void main(String[] args) {
-        Percolation p = new Percolation(2);
+        Percolation p = new Percolation(3);
 
         p.print();
 
+        testOpen(p, 0, 2);
+        testOpen(p, 1, 2);
+        testOpen(p, 2, 2);
+        testOpen(p, 2, 0);
+        testOpen(p, 1, 0);
         testOpen(p, 0, 0);
-        testOpen(p, 1, 1);
-        testOpen(p, 0, 1);
     }
 
     private void print() {
