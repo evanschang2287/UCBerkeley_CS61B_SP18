@@ -12,7 +12,7 @@ public class Percolation {
     private int vBottom;  /** Virtual bottom sites that connects all the bottom sites. */
 
     private final static int[][] DIRECTION = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
+                                            /** top     down    left     right */
     public Percolation(int N) {
         if (N <= 0) {
             throw new IllegalArgumentException("N should be larger than zero!");
@@ -30,7 +30,7 @@ public class Percolation {
     /** Optimization:
      *  Connect vTop to all the top row's elements.
      *
-     *  Why don't we connect vBottom to all the bottom row's elements?
+     *  Why don't we connect vBottom to all the bottom row's elements as well?
      *  Ans: To prevent backwash!!!
      */
     private void setup() {
@@ -44,6 +44,9 @@ public class Percolation {
         return row * N + col;
     }
 
+    /** Prevent corner cases:
+     *  top left, top right, bottom left, bottom right and all boundary sites.
+     */
     private boolean validIndex(int row, int col) {
         if (row < 0 || row > N - 1) {
             return false;
@@ -68,6 +71,7 @@ public class Percolation {
         grid[row][col] = true;
         sitesCount += 1;
 
+        /** If the adjacent site is opened, connect them. */
         for (int[] dir : DIRECTION) {
             int r = row + dir[0];
             int c = col + dir[1];
@@ -109,18 +113,12 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        Percolation p = new Percolation(5);
+        Percolation p = new Percolation(2);
 
         p.print();
 
         testOpen(p, 0, 0);
         testOpen(p, 1, 0);
-        testOpen(p, 1, 1);
-        testOpen(p, 2, 1);
-        testOpen(p, 3, 1);
-        testOpen(p, 4, 1);
-        testOpen(p, 4, 3);
-        testOpen(p, 4, 2);
     }
 
     private void print() {
