@@ -225,13 +225,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         bstmap.put("hello", 5);
         bstmap.put("cat", 10);
         bstmap.put("fish",22);
+        bstmap.put("bear",3);
         bstmap.put("zebra", 90);
-        bstmap.put("zebra", 200);
-        Integer get1 = bstmap.get("zebra");
-        Integer get2 = bstmap.get("dog");
+        bstmap.put("egg", 200);
+        bstmap.put("god", 100);
         bstmap.showKey();
 
-        bstmap.remove("zebra");
+        bstmap.remove("cat");
         bstmap.showKey();
     }
 }

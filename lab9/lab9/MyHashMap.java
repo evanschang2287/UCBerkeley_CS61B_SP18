@@ -63,7 +63,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     public void put(K key, V value) {
         int index = hash(key);
         if (!buckets[index].containsKey(key)) {
-            this.size += 1;
+            size += 1;
         }
         buckets[index].put(key, value);
     }
@@ -91,7 +91,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * UnsupportedOperationException. */
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        V removed = get(key);
+        int index = hash(key);
+        buckets[index].remove(key);
+        return removed;
     }
 
     /* Removes the entry for the specified key only if it is currently mapped to
@@ -99,7 +102,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * throw an UnsupportedOperationException.*/
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        V removed = get(key);
+        int index = hash(key);
+        buckets[index].remove(key, value);
+        return removed;
     }
 
     @Override
