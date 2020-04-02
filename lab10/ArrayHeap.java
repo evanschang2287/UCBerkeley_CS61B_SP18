@@ -194,8 +194,8 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         Node removed = getNode(1);
         swap(1, size);
         contents[size] = null;
-        size -= 1;
         sink(1);
+        size -= 1;
 
         return removed.myItem;
     }
