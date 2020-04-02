@@ -190,6 +190,8 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     public T removeMin() {
         if (size == 0) {
             return null;
+        } else if (size == 1) {
+            return peek();
         }
         Node removed = getNode(1);
         swap(1, size);
