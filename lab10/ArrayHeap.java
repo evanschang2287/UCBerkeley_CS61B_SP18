@@ -188,13 +188,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T removeMin() {
+        if (size == 0) {
+            return null;
+        }
         Node removed = getNode(1);
         swap(1, size);
         contents[size] = null;
         size -= 1;
-        if (size == 0) {
-            return null;
-        }
         sink(1);
 
         return removed.myItem;
@@ -222,9 +222,9 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         if (item == null) {
             return;
         }
-        for (Node i : contents) {
-            if (i.myItem.equals(item)) {
-                i.myPriority = priority;
+        for (int i = 1; i <= size; i++) {
+            if (contents[i].myItem.equals(item)) {
+                contents[i].myPriority = priority;
             }
         }
     }
