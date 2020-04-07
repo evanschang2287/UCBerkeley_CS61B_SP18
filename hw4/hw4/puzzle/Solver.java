@@ -69,7 +69,7 @@ public class Solver {
         return path;
     }
 
-    public int SearchCount() {
+    private int searchCount() {
         return searchCount;
     }
 }
