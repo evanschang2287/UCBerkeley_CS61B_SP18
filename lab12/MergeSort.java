@@ -1,7 +1,5 @@
 import edu.princeton.cs.algs4.Queue;
 
-import java.util.Iterator;
-
 public class MergeSort {
     /**
      * Removes and returns the smallest item that is in q1 or q2.
@@ -58,8 +56,7 @@ public class MergeSort {
      */
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(Queue<Item> q1, Queue<Item> q2) {
         Queue<Item> mergedQueue = new Queue<>();
-        int N = q1.size() + q2.size();
-        for (int i = 0; i < N; i++) {
+        while (!q1.isEmpty() || !q2.isEmpty()) {
             Item addedItem = getMin(q1, q2);
             mergedQueue.enqueue(addedItem);
         }
