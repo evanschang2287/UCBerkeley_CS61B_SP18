@@ -70,10 +70,9 @@ public class MergeSort {
     public static <Item extends Comparable> Queue<Item> mergeSort(Queue<Item> items) {
         Queue<Item> queue = new Queue<>();
         Queue<Queue<Item>> singleItemQueue = makeSingleItemQueues(items);
-        Iterator<Queue<Item>> qIter = singleItemQueue.iterator();
 
-        while (qIter.hasNext()) {
-            queue = mergeSortedQueues(queue, qIter.next());
+        for (Queue<Item> q : singleItemQueue) {
+            queue = mergeSortedQueues(queue, q);
         }
         return queue;
     }
