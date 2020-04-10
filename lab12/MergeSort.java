@@ -79,7 +79,7 @@ public class MergeSort {
         return queue;
     }
 
-    /* Test client of mergeSort. */
+    /* Test client of Merge Sort. */
     public static void main(String[] args) {
         Queue<String> q1 = new Queue<>();
         q1.enqueue("Alice");
