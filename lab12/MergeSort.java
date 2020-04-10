@@ -75,7 +75,6 @@ public class MergeSort {
         while (qIter.hasNext()) {
             queue = mergeSortedQueues(queue, qIter.next());
         }
-
         return queue;
     }
 

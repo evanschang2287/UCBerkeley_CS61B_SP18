@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.Queue;
 
+import java.util.Iterator;
+
 public class QuickSort {
     /**
      * Returns a new queue that contains the given queues catenated together.
@@ -44,16 +46,71 @@ public class QuickSort {
      * @param greater   An empty Queue. When the function completes, this queue will contain
      *                  all of the items in unsorted that are greater than the given pivot.
      */
-    private static <Item extends Comparable> void partition(
-            Queue<Item> unsorted, Item pivot,
-            Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
-        // Your code here!
+    private static <Item extends Comparable> void partition(Queue<Item> unsorted, Item pivot, Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
+        for (Item item : unsorted) {
+            int cmp = item.compareTo(pivot);
+            if (cmp < 0) {
+                less.enqueue(item);
+            } else if (cmp > 0) {
+                greater.enqueue(item);
+            } else {
+                equal.enqueue(item);
+            }
+        }
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
-    public static <Item extends Comparable> Queue<Item> quickSort(
-            Queue<Item> items) {
-        // Your code here!
-        return items;
+    public static <Item extends Comparable> Queue<Item> quickSort(Queue<Item> items) {
+        /* Base case */
+        if (items.size() <= 1) {
+            return items;
+        }
+
+        Queue<Item> lessQueue = new Queue<>();
+        Queue<Item> equalQueue = new Queue<>();
+        Queue<Item> greaterQueue = new Queue<>();
+        Item pivot = getRandomItem(items);
+
+        partition(items, pivot, lessQueue, equalQueue, greaterQueue);
+        Queue<Item> sortedLess = quickSort(lessQueue);
+        Queue<Item> sortedGreater = quickSort(greaterQueue);
+
+        Queue<Item> sortedQueue = catenate(sortedLess, equalQueue);
+        sortedQueue = catenate(sortedQueue, sortedGreater);
+
+        return sortedQueue;
+    }
+
+    /* Test client of Quick Sort. */
+    public static void main(String[] args) {
+        Queue<String> q1 = new Queue<>();
+        q1.enqueue("Alice");
+        q1.enqueue("Vanessa");
+        q1.enqueue("Ethan");
+        q1.enqueue("Bob");
+        q1.enqueue("Zion");
+        q1.enqueue("Mike");
+        q1.enqueue("Kate");
+        q1.enqueue("Cathy");
+        System.out.println(q1.toString());
+
+        Queue<String> quickQ1 = QuickSort.quickSort(q1);
+        System.out.println(quickQ1.toString());  // Should be: Alice Bob Cathy Ethan Kate Mike Vanessa Zion
+
+        System.out.println();
+
+        Queue<String> q2 = new Queue<>();
+        q2.enqueue("Dog");
+        q2.enqueue("Giraffe");
+        q2.enqueue("Whale");
+        q2.enqueue("Elephant");
+        q2.enqueue("Zebra");
+        q2.enqueue("Lion");
+        q2.enqueue("Fox");
+        q2.enqueue("Mouse");
+        System.out.println(q2.toString());
+
+        Queue<String> quickQ2 = QuickSort.quickSort(q2);
+        System.out.println(quickQ2.toString());  //Should be: Dog Elephant Fox Giraffe Lion Mouse Whale Zebra
     }
 }
