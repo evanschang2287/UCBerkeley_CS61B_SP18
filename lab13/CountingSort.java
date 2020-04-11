@@ -66,7 +66,47 @@ public class CountingSort {
      * @param arr int array that will be sorted
      */
     public static int[] betterCountingSort(int[] arr) {
-        // TODO make counting sort work with arrays containing negative numbers.
-        return null;
+        int[] sorted = new int[arr.length];
+
+        int negCnt = 0, posCnt = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] < 0) {
+                negCnt++;
+            } else {
+                posCnt++;
+            }
+        }
+
+        if (negCnt == 0) { // No negative number in the original array.
+            return naiveCountingSort(arr);
+        } else {
+            int[] negArr = new int[negCnt]; // Used to store all the negative number in the original array.
+            int[] posArr = new int[posCnt]; // Used to store all the positive number in the original array.
+            int idxNeg = 0, idxPos = 0;
+            for (int i = 0; i < arr.length; i++) {
+                if (arr[i] < 0) {
+                    negArr[idxNeg] = arr[i];
+                    idxNeg++;
+                } else {
+                    posArr[idxPos] = arr[i];
+                    idxPos++;
+                }
+            }
+
+            for (int i = 0; i < negArr.length; i++) {
+                negArr[i] *= -1;
+            }
+            negArr = naiveCountingSort(negArr);
+            posArr = naiveCountingSort(posArr);
+
+            for (int i = 0; i < negArr.length; i++) {
+                sorted[i] = negArr[negArr.length - i - 1] * -1;
+            }
+            for (int i = negArr.length; i < sorted.length; i++) {
+                sorted[i] = posArr[i - negArr.length];
+            }
+
+            return sorted;
+        }
     }
 }
