@@ -17,6 +17,7 @@ public class RadixSort {
      * @param asciis String[] that needs to be sorted
      *
      * @return String[] the sorted array
+     * @CitedFrom https://github.com/btke/CS61B-Spring-2018/blob/master/Labs/lab13/RadixSort.java
      */
     public static String[] sort(String[] asciis) {
         Queue<String>[] buckets = new Queue[256];
@@ -38,7 +39,7 @@ public class RadixSort {
                     int ofASCII = item.charAt(idx);
                     buckets[ofASCII].add(item);
                 } else {
-                    buckets[item.charAt(0)].add(item);
+                    buckets[(int) item.charAt(0)].add(item);
                 }
             }
             length++;
@@ -62,21 +63,6 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        String[] temp = new String[asciis.length];
-        int[] range = new int[256];
-        for (int i = 0; i < asciis.length; i++) {
-            int idx = asciis[i].charAt(index); // implicitly convert char to int
-            range[idx]++;
-        }
-        for (int i = 0; i < range.length - 1; i++) {
-            range[i + 1] += range[i];
-        }
-        for (int i = asciis.length - 1; i >= 0; i--) {
-            int idx = asciis[i].charAt(index);
-            range[idx]--;
-            temp[range[idx]] = asciis[i];
-        }
-        System.arraycopy(temp, 0, asciis, 0, temp.length);
     }
 
     /**
