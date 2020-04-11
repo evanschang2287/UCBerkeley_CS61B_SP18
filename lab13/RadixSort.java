@@ -40,7 +40,7 @@ public class RadixSort {
         }
 
         for (int i = 0; i < sorted.length; i++) {
-             sorted[i] = sorted[i].replace(" ", "");
+            sorted[i] = sorted[i].replaceAll("\\s+", "");
         }
 
         return sorted;
@@ -68,7 +68,7 @@ public class RadixSort {
             range[idx]--;
             temp[range[idx]] = asciis[i];
         }
-        System.arraycopy(temp, 0, asciis, 0, temp.length);;
+        System.arraycopy(temp, 0, asciis, 0, temp.length);
     }
 
     /**
