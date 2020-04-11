@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Class for doing Radix sort
  *
@@ -16,34 +19,39 @@ public class RadixSort {
      * @return String[] the sorted array
      */
     public static String[] sort(String[] asciis) {
-        int maxLength = 0;
-        for (int i = 0; i < asciis.length; i++) {
-            if (asciis[i].length() > maxLength) {
-                maxLength = asciis[i].length();
-            }
+        Queue<String>[] buckets = new Queue[256];
+        for (int i = 0; i < 256; i++) {
+            buckets[i] = new LinkedList();
         }
 
-        /* To make sure that all the string in asciis have same length. */
-        for (int i = 0; i < asciis.length; i++) {
-            if (asciis[i].length() < maxLength) {
-                int diff = maxLength - asciis[i].length();
-                for (int j = 0; j < diff; j++) {
-                    asciis[i] += " ";
+        boolean sorted = false;
+        int length = 0;
+        String[] sortedArr = new String[asciis.length];
+        System.arraycopy(asciis, 0, sortedArr, 0, asciis.length);
+
+        while (!sorted) {
+            sorted = true;
+            for (String item : sortedArr) {
+                int idx = item.length() - length - 1;
+                if (idx >= 0) {
+                    sorted = false;
+                    int ofASCII = item.charAt(idx);
+                    buckets[ofASCII].add(item);
+                } else {
+                    buckets[item.charAt(0)].add(item);
+                }
+            }
+            length++;
+
+            int idx = 0;
+            for (Queue<String> bucket : buckets) {
+                while (!bucket.isEmpty()) {
+                    sortedArr[idx] = bucket.remove();
+                    idx++;
                 }
             }
         }
-
-        String[] sorted = new String[asciis.length];
-        System.arraycopy(asciis, 0, sorted, 0, asciis.length);
-        for (int idx = maxLength - 1; idx >= 0; idx--) {
-            sortHelperLSD(sorted, idx);
-        }
-
-        for (int i = 0; i < sorted.length; i++) {
-            sorted[i] = sorted[i].replace(" ", "");
-        }
-
-        return sorted;
+        return sortedArr;
     }
 
     /**
