@@ -110,12 +110,12 @@ public class Rasterer {
             }
         }
 
-        results.put("rasterULLON", rasterULLON);
+        results.put("raster_ul_lon", rasterULLON);
         results.put("depth", depth);
-        results.put("rasterLRLON", rasterLRLON);
-        results.put("rasterLRLAT", rasterLRLAT);
+        results.put("raster_lr_lon", rasterLRLON);
+        results.put("raster_lr_lat", rasterLRLAT);
         results.put("render_grid", renderGrid);
-        results.put("rasterULLAT", rasterULLAT);
+        results.put("raster_ul_lat", rasterULLAT);
         results.put("query_success", query_success);
 
         return results;
