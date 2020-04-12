@@ -33,10 +33,10 @@ public class Rasterer {
      *
      * @return A map of results for the front end as specified: <br>
      * "render_grid"   : String[][], the files to display. <br>
-     * "raster_ul_lon" : Number, the bounding upper left longitude of the rastered image. <br>
-     * "raster_ul_lat" : Number, the bounding upper left latitude of the rastered image. <br>
-     * "raster_lr_lon" : Number, the bounding lower right longitude of the rastered image. <br>
-     * "raster_lr_lat" : Number, the bounding lower right latitude of the rastered image. <br>
+     * "rasterULLON" : Number, the bounding upper left longitude of the rastered image. <br>
+     * "rasterULLAT" : Number, the bounding upper left latitude of the rastered image. <br>
+     * "rasterLRLON" : Number, the bounding lower right longitude of the rastered image. <br>
+     * "rasterLRLAT" : Number, the bounding lower right latitude of the rastered image. <br>
      * "depth"         : Number, the depth of the nodes of the rastered image <br>
      * "query_success" : Boolean, whether the query was able to successfully complete; don't
      *                    forget to set this to true on success! <br>
@@ -44,7 +44,7 @@ public class Rasterer {
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
         Map<String, Object> results = new HashMap<>();
 
-        String[][] render_grid;
+        String[][] renderGrid;
         Double w = params.get("w");
         Double h = params.get("h");
         Double ullon = params.get("ullon");
@@ -59,10 +59,10 @@ public class Rasterer {
             query_success = false;
         }
 
-        Double raster_ul_lon = 0.0;
-        Double raster_ul_lat = 0.0;
-        Double raster_lr_lon = 0.0;
-        Double raster_lr_lat = 0.0;
+        Double rasterULLON = 0.0;
+        Double rasterULLAT = 0.0;
+        Double rasterLRLON = 0.0;
+        Double rasterLRLAT = 0.0;
 
         int xMin = 0;
         int xMax = 0;
@@ -77,59 +77,45 @@ public class Rasterer {
         yMin = (int) Math.floor(((MapServer.ROOT_ULLAT - ullat) / latPerPic));
         yMax = (int) (Math.pow(2, depth) - 1 - Math.floor((lrlat - MapServer.ROOT_LRLAT) / latPerPic));
 
-        raster_ul_lon = MapServer.ROOT_ULLON + lonPerPic * xMin;
-        raster_ul_lat = MapServer.ROOT_ULLAT - latPerPic * yMin;
-        raster_lr_lon = MapServer.ROOT_ULLON + lonPerPic * (xMax + 1);
-        raster_lr_lat = MapServer.ROOT_ULLAT - latPerPic * (yMax + 1);
+        rasterULLON = MapServer.ROOT_ULLON + lonPerPic * xMin;
+        rasterULLAT = MapServer.ROOT_ULLAT - latPerPic * yMin;
+        rasterLRLON = MapServer.ROOT_ULLON + lonPerPic * (xMax + 1);
+        rasterLRLAT = MapServer.ROOT_ULLAT - latPerPic * (yMax + 1);
 
         if (ullon < MapServer.ROOT_ULLON) {
-            raster_ul_lon = MapServer.ROOT_ULLON;
+            rasterULLON = MapServer.ROOT_ULLON;
             xMin = 0;
         }
         if (lrlon > MapServer.ROOT_LRLON) {
-            raster_lr_lon = MapServer.ROOT_LRLON;
+            rasterLRLON = MapServer.ROOT_LRLON;
             xMax = (int) Math.pow(2, depth) - 1;
         }
         if (ullat > MapServer.ROOT_ULLAT) {
-            raster_ul_lat = MapServer.ROOT_ULLAT;
+            rasterULLAT = MapServer.ROOT_ULLAT;
             yMin = 0;
         }
         if (lrlat < MapServer.ROOT_LRLAT) {
-            raster_lr_lat = MapServer.ROOT_LRLAT;
+            rasterLRLAT = MapServer.ROOT_LRLAT;
             yMax = (int) Math.pow(2, depth) - 1;
         }
 
         int xRange = xMax - xMin + 1;
         int yRange = yMax - yMin + 1;
-        render_grid = new String[yRange][xRange];
+        renderGrid = new String[yRange][xRange];
         for (int j = 0; j < yRange; j++) {
             for (int i = 0; i < xRange; i++) {
                 int yNum = yMin + j;
                 int xNum = xMin + i;
-                render_grid[j][i] = "d" + depth + "_x" + xNum + "_y" + yNum + ".png";
+                renderGrid[j][i] = "d" + depth + "_x" + xNum + "_y" + yNum + ".png";
             }
         }
-/*
-        System.out.println("depth: " + depth + " xMin: " + xMin + " xMax: " + xMax + " yMin: " + yMin + " yMax: " + yMax);
-        for (int j = 0; j < yRange; j++) {
-            for (int i = 0; i < xRange; i++) {
-                System.out.print(render_grid[j][i] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println("raster_ul_lon: " + raster_ul_lon);
-        System.out.println("raster_ul_lat: " + raster_ul_lat);
-        System.out.println("raster_lr_lon: " + raster_lr_lon);
-        System.out.println("raster_lr_lat: " + raster_lr_lat);
-        System.out.println("query success: " + query_success);
 
- */
-        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("rasterULLON", rasterULLON);
         results.put("depth", depth);
-        results.put("raster_lr_lon", raster_lr_lon);
-        results.put("raster_lr_lat", raster_lr_lat);
-        results.put("render_grid", render_grid);
-        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("rasterLRLON", rasterLRLON);
+        results.put("rasterLRLAT", rasterLRLAT);
+        results.put("render_grid", renderGrid);
+        results.put("rasterULLAT", rasterULLAT);
         results.put("query_success", query_success);
 
         return results;
