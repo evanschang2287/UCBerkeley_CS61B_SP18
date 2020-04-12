@@ -35,7 +35,7 @@ public class MapServer {
      * Longitude == x-axis; latitude == y-axis.
      */
     public static final double ROOT_ULLAT = 37.892195547244356, ROOT_ULLON = -122.2998046875,
-            ROOT_LRLAT = 37.82280243352756, ROOT_LRLON = -122.2119140625;
+                               ROOT_LRLAT = 37.82280243352756, ROOT_LRLON = -122.2119140625;
     /** Each tile is 256x256 pixels. */
     public static final int TILE_SIZE = 256;
     /** HTTP failed response. */
@@ -107,8 +107,7 @@ public class MapServer {
         /* Define the raster endpoint for HTTP GET requests. I use anonymous functions to define
          * the request handlers. */
         get("/raster", (req, res) -> {
-            HashMap<String, Double> params =
-                    getRequestParams(req, REQUIRED_RASTER_REQUEST_PARAMS);
+            HashMap<String, Double> params = getRequestParams(req, REQUIRED_RASTER_REQUEST_PARAMS);
             /* The png image is written to the ByteArrayOutputStream */
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             /* getMapRaster() does almost all the work for this API call */
@@ -332,7 +331,7 @@ public class MapServer {
     private static String getDirectionsText() {
         List<Router.NavigationDirection> directions = Router.routeDirections(graph, route);
         if (directions == null || directions.isEmpty()) {
-          return "";
+            return "";
         }
         StringBuilder sb = new StringBuilder();
         int step = 1;

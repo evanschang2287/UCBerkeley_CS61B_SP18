@@ -63,28 +63,18 @@ public class Rasterer {
             querySuccess = false;
         }
 
-        Double rasterULLON = 0.0;
-        Double rasterULLAT = 0.0;
-        Double rasterLRLON = 0.0;
-        Double rasterLRLAT = 0.0;
-
-        int xMin = 0;
-        int xMax = 0;
-        int yMin = 0;
-        int yMax = 0;
-
         final double lonPerPic = (ROOT_LRLON - ROOT_ULLON) / Math.pow(2, depth);
         final double latPerPic = (ROOT_ULLAT - ROOT_LRLAT) / Math.pow(2, depth);
 
-        xMin = (int) Math.floor(((ullon - ROOT_ULLON) / lonPerPic));
-        xMax = (int) (Math.pow(2, depth) - 1 - Math.floor((ROOT_LRLON - lrlon) / lonPerPic));
-        yMin = (int) Math.floor(((ROOT_ULLAT - ullat) / latPerPic));
-        yMax = (int) (Math.pow(2, depth) - 1 - Math.floor((lrlat - ROOT_LRLAT) / latPerPic));
+        int xMin = (int) Math.floor(((ullon - ROOT_ULLON) / lonPerPic));
+        int xMax = (int) (Math.pow(2, depth) - 1 - Math.floor((ROOT_LRLON - lrlon) / lonPerPic));
+        int yMin = (int) Math.floor(((ROOT_ULLAT - ullat) / latPerPic));
+        int yMax = (int) (Math.pow(2, depth) - 1 - Math.floor((lrlat - ROOT_LRLAT) / latPerPic));
 
-        rasterULLON = ROOT_ULLON + lonPerPic * xMin;
-        rasterULLAT = ROOT_ULLAT - latPerPic * yMin;
-        rasterLRLON = ROOT_ULLON + lonPerPic * (xMax + 1);
-        rasterLRLAT = ROOT_ULLAT - latPerPic * (yMax + 1);
+        Double rasterULLON = ROOT_ULLON + lonPerPic * xMin;
+        Double rasterULLAT = ROOT_ULLAT - latPerPic * yMin;
+        Double rasterLRLON = ROOT_ULLON + lonPerPic * (xMax + 1);
+        Double rasterLRLAT = ROOT_ULLAT - latPerPic * (yMax + 1);
 
         if (ullon < ROOT_ULLON) {
             rasterULLON = ROOT_ULLON;
@@ -141,5 +131,4 @@ public class Rasterer {
         }
         return depth;
     }
-
 }
