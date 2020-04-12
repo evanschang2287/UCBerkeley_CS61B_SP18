@@ -42,11 +42,114 @@ public class Rasterer {
      *                    forget to set this to true on success! <br>
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
+
+        String[][] render_grid;
+        Double w = params.get("w");
+        Double h = params.get("h");
+        Double ullon = params.get("ullon");
+        Double ullat = params.get("ullat");
+        Double lrlon = params.get("lrlon");
+        Double lrlat = params.get("lrlat");
+        Integer depth = computeDepth(ullon, lrlon, w);
+        Boolean query_success = true;
+
+        boolean wrongPos = ullon > lrlon || ullat < lrlat;
+        if (wrongPos) {
+            query_success = false;
+        }
+
+        Double raster_ul_lon = 0.0;
+        Double raster_ul_lat = 0.0;
+        Double raster_lr_lon = 0.0;
+        Double raster_lr_lat = 0.0;
+
+        int xMin = 0;
+        int xMax = 0;
+        int yMin = 0;
+        int yMax = 0;
+
+        final double lonPerPic = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / Math.pow(2, depth); // 0.02197265625
+        final double latPerPic = (MapServer.ROOT_ULLAT - MapServer.ROOT_LRLAT) / Math.pow(2, depth); // 0.017348278429199
+
+        xMin = (int) Math.floor(((ullon - MapServer.ROOT_ULLON) / lonPerPic));
+        xMax = (int) (Math.pow(2, depth) - 1 - Math.floor((MapServer.ROOT_LRLON - lrlon) / lonPerPic));
+        yMin = (int) Math.floor(((MapServer.ROOT_ULLAT - ullat) / latPerPic));
+        yMax = (int) (Math.pow(2, depth) - 1 - Math.floor((lrlat - MapServer.ROOT_LRLAT) / latPerPic));
+
+        raster_ul_lon = MapServer.ROOT_ULLON + lonPerPic * xMin;
+        raster_ul_lat = MapServer.ROOT_ULLAT - latPerPic * yMin;
+        raster_lr_lon = MapServer.ROOT_ULLON + lonPerPic * (xMax + 1);
+        raster_lr_lat = MapServer.ROOT_ULLAT - latPerPic * (yMax + 1);
+
+        if (ullon < MapServer.ROOT_ULLON) {
+            raster_ul_lon = MapServer.ROOT_ULLON;
+            xMin = 0;
+        }
+        if (lrlon > MapServer.ROOT_LRLON) {
+            raster_lr_lon = MapServer.ROOT_LRLON;
+            xMax = (int) Math.pow(2, depth) - 1;
+        }
+        if (ullat > MapServer.ROOT_ULLAT) {
+            raster_ul_lat = MapServer.ROOT_ULLAT;
+            yMin = 0;
+        }
+        if (lrlat < MapServer.ROOT_LRLAT) {
+            raster_lr_lat = MapServer.ROOT_LRLAT;
+            yMax = (int) Math.pow(2, depth) - 1;
+        }
+
+        int xRange = xMax - xMin + 1;
+        int yRange = yMax - yMin + 1;
+        render_grid = new String[yRange][xRange];
+        for (int j = 0; j < yRange; j++) {
+            for (int i = 0; i < xRange; i++) {
+                int yNum = yMin + j;
+                int xNum = xMin + i;
+                render_grid[j][i] = "d" + depth + "_x" + xNum + "_y" + yNum + ".png";
+            }
+        }
+/*
+        System.out.println("depth: " + depth + " xMin: " + xMin + " xMax: " + xMax + " yMin: " + yMin + " yMax: " + yMax);
+        for (int j = 0; j < yRange; j++) {
+            for (int i = 0; i < xRange; i++) {
+                System.out.print(render_grid[j][i] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println("raster_ul_lon: " + raster_ul_lon);
+        System.out.println("raster_ul_lat: " + raster_ul_lat);
+        System.out.println("raster_lr_lon: " + raster_lr_lon);
+        System.out.println("raster_lr_lat: " + raster_lr_lat);
+        System.out.println("query success: " + query_success);
+
+ */
+        results.put("raster_ul_lon", raster_ul_lon);
+        results.put("depth", depth);
+        results.put("raster_lr_lon", raster_lr_lon);
+        results.put("raster_lr_lat", raster_lr_lat);
+        results.put("render_grid", render_grid);
+        results.put("raster_ul_lat", raster_ul_lat);
+        results.put("query_success", query_success);
+
         return results;
+    }
+
+    private Integer computeDepth(Double ullon, Double lrlon, Double width) {
+        Integer depth = 0;
+        Integer maxDepth = 7;
+        Double desiredLonDPP = Math.abs(ullon - lrlon) * 288200 / width;
+        Double initLonDPP = Math.abs(MapServer.ROOT_ULLON - MapServer.ROOT_LRLON) * 288200 / MapServer.TILE_SIZE; // 98.94561767578125
+
+        while (initLonDPP > desiredLonDPP) {
+            if (depth > maxDepth) {
+                depth = maxDepth;
+                break;
+            }
+            initLonDPP /= 2;
+            depth += 1;
+        }
+        return depth;
     }
 
 }
