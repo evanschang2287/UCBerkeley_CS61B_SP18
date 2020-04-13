@@ -1,7 +1,5 @@
 import edu.princeton.cs.algs4.Picture;
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SeamCarver {
     private Picture pic;
@@ -9,13 +7,13 @@ public class SeamCarver {
     private int height;
 
     public SeamCarver(Picture picture) {
-        pic = picture;
+        pic = new Picture(picture);
         width = pic.width();
         height = pic.height();
     }
 
     public Picture picture() {
-        return pic;
+        return new Picture(pic);
     }
 
     public int width() {
@@ -174,7 +172,7 @@ public class SeamCarver {
 
     public void removeHorizontalSeam(int[] seam) {
         if (validSeam(seam)) {
-            pic = SeamRemover.removeHorizontalSeam(pic, seam);
+            pic = new Picture(SeamRemover.removeHorizontalSeam(pic, seam));
             height--;
         } else {
             throw new IllegalArgumentException();
@@ -183,7 +181,7 @@ public class SeamCarver {
 
     public void removeVerticalSeam(int[] seam) {
         if (validSeam(seam)) {
-            pic = SeamRemover.removeVerticalSeam(pic, seam);
+            pic = new Picture(SeamRemover.removeVerticalSeam(pic, seam));
             width--;
         } else {
             throw new IllegalArgumentException();
