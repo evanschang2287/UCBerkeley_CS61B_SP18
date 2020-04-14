@@ -234,34 +234,4 @@ public class SeamCarver {
             throw new IllegalArgumentException();
         }
     }
-
-    public static void main(String[] args) {
-        String picPath = "images/7x10.png";
-        Picture pic = new Picture(picPath);
-        SeamCarver sc = new SeamCarver(pic);
-
-        double[][] e = new double[sc.width][sc.height];
-
-        for (int x = 0; x < sc.width; x++) {
-            for (int y = 0; y < sc.height; y++) {
-                e[x][y] = sc.energy(x, y);
-            }
-        }
-
-        for (int y = 0; y < sc.height; y++) {
-            for (int x = 0; x < sc.width; x++) {
-                System.out.print(e[x][y] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-
-        double[][] m = sc.findM();
-        for (int y = 0; y < sc.height; y++) {
-            for (int x = 0; x < sc.width; x++) {
-                System.out.print(m[x][y] + " ");
-            }
-            System.out.println();
-        }
-    }
 }
