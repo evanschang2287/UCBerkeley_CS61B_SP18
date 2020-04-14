@@ -185,22 +185,22 @@ public class SeamCarver {
                     int leftX = col - 1;
                     int rightX = col + 1;
                     int yPos = row - 1;
-                    double leftE = 0.0, topE = 0.0, rightE = 0.0;
+                    double leftM = 0.0, topM = 0.0, rightM = 0.0;
 
                     if (leftX < 0) {
-                        leftE = Double.MAX_VALUE;
+                        leftM = Double.MAX_VALUE;
                     } else {
-                        leftE = M[leftX][yPos];
+                        leftM = M[leftX][yPos];
                     }
                     if (rightX >= width) {
-                        rightE = Double.MAX_VALUE;
+                        rightM = Double.MAX_VALUE;
                     } else {
-                        rightE = M[rightX][yPos];
+                        rightM = M[rightX][yPos];
                     }
-                    topE = M[topX][yPos];
+                    topM = M[topX][yPos];
 
-                    double minE = minEnergy(leftE, topE, rightE);
-                    M[col][row] = energy(col, row) + minE;
+                    double minM = minEnergy(leftM, topM, rightM);
+                    M[col][row] = energy(col, row) + minM;
                 }
             }
         }
