@@ -84,12 +84,12 @@ public class SeamCarver {
     }
 
     private double minEnergy(double leftE, double topE, double rightE) {
-        if (leftE < topE && leftE < rightE) {
+        if (leftE <= topE && leftE <= rightE) {
             return leftE;
-        } else if (topE < leftE && topE < rightE) {
-            return topE;
+        } else if (rightE <= leftE && rightE <= topE) {
+            return rightE;
         }
-        return rightE;
+        return topE;
     }
 
     private void transpose() {
@@ -115,55 +115,97 @@ public class SeamCarver {
 
     public int[] findVerticalSeam() {
         int[] verticalSeam = new int[height];
+        double[][] M = findM();
 
-        double minTotalEnergy = Double.MAX_VALUE;
+        int startX = 0;
+        double minM = Double.MAX_VALUE;
         for (int col = 0; col < width; col++) {
-            int xPos = col;
-            int[] tempSeam = new int[height];
-            double tempTotalEnergy = 0.0;
-
-            for (int y = 0; y < height; y++) {
-                if (y == 0) {
-                    tempTotalEnergy += energy(xPos, y);
-                    tempSeam[y] = xPos;
-                } else {
-                    double leftE = 0.0, topE = 0.0, rightE = 0.0;
-
-                    /* Calculate leftX's energy & topX's energy & rightX's energy. */
-                    if (xPos - 1 < 0) {
-                        leftE = Double.MAX_VALUE;
-                    } else {
-                        leftE = energy(xPos - 1, y);
-                    }
-                    if (xPos + 1 >= width) {
-                        rightE = Double.MAX_VALUE;
-                    } else {
-                        rightE = energy(xPos + 1, y);
-                    }
-                    topE = energy(xPos, y);
-
-                    double minE = minEnergy(leftE, topE, rightE);
-                    tempTotalEnergy += minE;
-                    /* Determine next position of x. */
-                    if (minE == leftE) {
-                        tempSeam[y] = xPos - 1;
-                        xPos -= 1;
-                    } else if (minE == rightE) {
-                        tempSeam[y] = xPos + 1;
-                        xPos += 1;
-                    } else {
-                        tempSeam[y] = xPos;
-                    }
-                }
+            double e = M[col][height - 1];
+            if (e < minM) {
+                minM = e;
+                startX = col;
             }
+        }
+        verticalSeam[height - 1] = startX;
 
-            if (tempTotalEnergy < minTotalEnergy) {
-                minTotalEnergy = tempTotalEnergy;
-                verticalSeam = tempSeam;
+        int xPos = startX;
+        for (int row = height - 1; row > 0; row--) {
+            int yPos = row - 1;
+            int leftX = xPos - 1;
+            int topX = xPos;
+            int rightX = xPos + 1;
+            double leftM = 0.0, topM = 0.0, rightM = 0.0;
+
+            if (leftX < 0) {
+                leftM = Double.MAX_VALUE;
+            } else {
+                leftM = M[leftX][yPos];
+            }
+            if (rightX >= width) {
+                rightM = Double.MAX_VALUE;
+            } else {
+                rightM = M[rightX][yPos];
+            }
+            topM = M[topX][yPos];
+
+            minM = minEnergy(leftM, topM, rightM);
+            if (minM == leftM) {
+                verticalSeam[row - 1] = leftX;
+                xPos = leftX;
+            } else if (minM == rightM) {
+                verticalSeam[row - 1] = rightX;
+                xPos = rightX;
+            } else {
+                verticalSeam[row - 1] = topX;
+                xPos = topX;
+            }
+        }
+        return verticalSeam;
+    }
+
+    private double[][] findM() {
+        double[][] e = new double[width][height];
+        for (int col = 0; col < width; col++) {
+            for (int row = 0; row < height; row++) {
+                e[col][row] = energy(col, row);
             }
         }
 
-        return verticalSeam;
+        double[][] M = new double[width][height];
+        for (int col = 0; col < width; col++) {
+            M[col][0] = e[col][0];
+        }
+
+        if (width == 1) {
+            return M;
+        } else {
+            for (int row = 1; row < height; row++) {
+                for (int col = 0; col < width; col++) {
+                    int topX = col;
+                    int leftX = col - 1;
+                    int rightX = col + 1;
+                    int yPos = row - 1;
+                    double leftE = 0.0, topE = 0.0, rightE = 0.0;
+
+                    if (leftX < 0) {
+                        leftE = Double.MAX_VALUE;
+                    } else {
+                        leftE = M[leftX][yPos];
+                    }
+                    if (rightX >= width) {
+                        rightE = Double.MAX_VALUE;
+                    } else {
+                        rightE = M[rightX][yPos];
+                    }
+                    topE = M[topX][yPos];
+
+                    double minE = minEnergy(leftE, topE, rightE);
+                    M[col][row] = energy(col, row) + minE;
+                }
+            }
+        }
+
+        return M;
     }
 
     private boolean validSeam(int[] seam) {
@@ -190,6 +232,36 @@ public class SeamCarver {
             width--;
         } else {
             throw new IllegalArgumentException();
+        }
+    }
+
+    public static void main(String[] args) {
+        String picPath = "images/7x10.png";
+        Picture pic = new Picture(picPath);
+        SeamCarver sc = new SeamCarver(pic);
+
+        double[][] e = new double[sc.width][sc.height];
+
+        for (int x = 0; x < sc.width; x++) {
+            for (int y = 0; y < sc.height; y++) {
+                e[x][y] = sc.energy(x, y);
+            }
+        }
+
+        for (int y = 0; y < sc.height; y++) {
+            for (int x = 0; x < sc.width; x++) {
+                System.out.print(e[x][y] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+
+        double[][] m = sc.findM();
+        for (int y = 0; y < sc.height; y++) {
+            for (int x = 0; x < sc.width; x++) {
+                System.out.print(m[x][y] + " ");
+            }
+            System.out.println();
         }
     }
 }
