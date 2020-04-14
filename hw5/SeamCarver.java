@@ -83,56 +83,32 @@ public class SeamCarver {
         return calEnergyX(x, y) + calEnergyY(x, y);
     }
 
-    private int minEnergyVertical(int x, int y) {
-        double minE = Double.MAX_VALUE;
-        int diff = -1;
-        for (int d = -1; d <= 1; d++) {
-            int xPos = changeX(x, d);
-            int yPos = changeY(y, 1);
-            double e = energy(xPos, yPos);
-            if (e < minE) {
-                minE = e;
-                diff = d;
-            }
+    private double minEnergy(double leftE, double topE, double rightE) {
+        if (leftE < topE && leftE < rightE) {
+            return leftE;
+        } else if (topE < leftE && topE < rightE) {
+            return topE;
         }
-        return diff;
+        return rightE;
     }
 
-    private int minEnergyHorizontal(int x, int y) {
-        double minE = Double.MAX_VALUE;
-        int diff = -1;
-        for (int d = -1; d <= 1; d++) {
-            int xPos = changeX(x, 1);
-            int yPos = changeY(y, d);
-            double e = energy(xPos, yPos);
-            if (e < minE) {
-                minE = e;
-                diff = d;
+    private void transpose() {
+        Picture temp = new Picture(height, width);
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                temp.set(row, col, pic.get(col, row));
             }
         }
-        return diff;
+        pic = temp;
+        int t = width;
+        width = height;
+        height = t;
     }
 
     public int[] findHorizontalSeam() {
-        int[] horizontalSeam = new int[width];
-
-        int startY = 0;
-        double minE = Double.MAX_VALUE;
-        for (int y = 0; y < height; y++)  {
-            double e = energy(0, y);
-            if (e < minE) {
-                minE = e;
-                startY = y;
-            }
-        }
-        horizontalSeam[0] = startY;
-
-        int yPos = startY;
-        for (int x = 0; x < width - 1; x++) {
-            int diff = minEnergyHorizontal(x, yPos);
-            yPos += diff;
-            horizontalSeam[x + 1] = yPos;
-        }
+        transpose();
+        int[] horizontalSeam = findVerticalSeam();
+        transpose();
 
         return horizontalSeam;
     }
@@ -140,22 +116,51 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
         int[] verticalSeam = new int[height];
 
-        int startX = 0;
-        double minE = Double.MAX_VALUE;
-        for (int x = 0; x < width; x++) {
-            double e = energy(x, 0);
-            if (e < minE) {
-                minE = e;
-                startX = x;
-            }
-        }
-        verticalSeam[0] = startX;
+        double minTotalEnergy = Double.MAX_VALUE;
+        for (int col = 0; col < width; col++) {
+            int xPos = col;
+            int[] tempSeam = new int[height];
+            double tempTotalEnergy = 0.0;
 
-        int xPos = startX;
-        for (int y = 0; y < height - 1; y++) {
-            int diff = minEnergyVertical(xPos, y);
-            xPos += diff;
-            verticalSeam[y + 1] = xPos;
+            for (int y = 0; y < height; y++) {
+                if (y == 0) {
+                    tempTotalEnergy += energy(xPos, y);
+                    tempSeam[y] = xPos;
+                } else {
+                    double leftE = 0.0, topE = 0.0, rightE = 0.0;
+
+                    /* Calculate leftX's energy & topX's energy & rightX's energy. */
+                    if (xPos - 1 < 0) {
+                        leftE = Double.MAX_VALUE;
+                    } else {
+                        leftE = energy(xPos - 1, y);
+                    }
+                    if (xPos + 1 >= width) {
+                        rightE = Double.MAX_VALUE;
+                    } else {
+                        rightE = energy(xPos + 1, y);
+                    }
+                    topE = energy(xPos, y);
+
+                    double minE = minEnergy(leftE, topE, rightE);
+                    tempTotalEnergy += minE;
+                    /* Determine next position of x. */
+                    if (minE == leftE) {
+                        tempSeam[y] = xPos - 1;
+                        xPos -= 1;
+                    } else if (minE == rightE) {
+                        tempSeam[y] = xPos + 1;
+                        xPos += 1;
+                    } else {
+                        tempSeam[y] = xPos;
+                    }
+                }
+            }
+
+            if (tempTotalEnergy < minTotalEnergy) {
+                minTotalEnergy = tempTotalEnergy;
+                verticalSeam = tempSeam;
+            }
         }
 
         return verticalSeam;
