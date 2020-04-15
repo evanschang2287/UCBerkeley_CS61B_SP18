@@ -96,13 +96,15 @@ public class Plip extends Creature {
         if (empty.size() == 0) {
             return new Action(Action.ActionType.STAY);
         } else {
-            if (energy >= 1.0) {
+            if (energy > 1.0) {
                 Direction movDir = HugLifeUtils.randomEntry(empty);
                 return new Action(Action.ActionType.REPLICATE, movDir);
             } else if (enemy.size() > 0) { // It means there is at least one clorus in the neighbors.
                 if (HugLifeUtils.random() < moveProbability) {
                     Direction movDir = HugLifeUtils.randomEntry(empty);
                     return new Action(Action.ActionType.MOVE, movDir);
+                } else {
+                    return new Action(Action.ActionType.STAY);
                 }
             }
         }
