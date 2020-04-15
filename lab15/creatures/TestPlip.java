@@ -1,13 +1,11 @@
 package creatures;
+import huglife.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.awt.Color;
-import huglife.Direction;
-import huglife.Action;
-import huglife.Occupant;
-import huglife.Impassible;
-import huglife.Empty;
+
+import javax.accessibility.AccessibleRelation;
 
 /** Tests the plip class   
  *  @authr FIXME
@@ -36,10 +34,12 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
-
+        Plip p = new Plip(2);
+        Plip offSpring =  p.replicate();
+        assertNotSame(p, offSpring);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
         Plip p = new Plip(1.2);
         HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
@@ -54,7 +54,12 @@ public class TestPlip {
 
         Action actual = p.chooseAction(surrounded);
         Action expected = new Action(Action.ActionType.STAY);
+        assertEquals(expected, actual);
 
+        surrounded.put(Direction.LEFT, new Empty());
+        Direction movDir = Direction.LEFT;
+        actual = p.chooseAction(surrounded);
+        expected = new Action(Action.ActionType.REPLICATE, movDir);
         assertEquals(expected, actual);
     }
 
