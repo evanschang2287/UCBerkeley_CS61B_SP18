@@ -1,6 +1,3 @@
-import java.util.LinkedList;
-import java.util.List;
-
 public class HuffmanDecoder {
     public static void main(String[] args) {
         ObjectReader or = new ObjectReader(args[0]);
