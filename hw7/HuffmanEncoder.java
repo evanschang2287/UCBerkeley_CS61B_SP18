@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.LinkedList;
 
 public class HuffmanEncoder {
     public static Map<Character, Integer> buildFrequencyTable(char[] inputSymbols) {
@@ -21,6 +24,15 @@ public class HuffmanEncoder {
 
         ObjectWriter ow = new ObjectWriter(args[0] + ".huf");
         ow.writeObject(bt);
+
+        Integer numOfSymbols = 0;
+        for (Map.Entry<Character, Integer> m : freqTable.entrySet()) {
+            Integer freq = m.getValue();
+            numOfSymbols += freq;
+        }
+        if (numOfSymbols != 0) {
+            ow.writeObject(numOfSymbols);
+        }
 
         Map<Character, BitSequence> lookupTable = bt.buildLookupTable();
         List<BitSequence> bs = new LinkedList<>();

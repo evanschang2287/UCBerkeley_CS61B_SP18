@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 public class BinaryTrie implements Serializable {
     private Node root;
 
-    private static class Node implements Comparable<Node> {
+    private static class Node implements Serializable, Comparable<Node> {
         private final char ch;
         private final int freq;
         private final Node left, right;
@@ -38,7 +38,7 @@ public class BinaryTrie implements Serializable {
         while (pq.size() > 1) {
             Node left = pq.poll();
             Node right = pq.poll();
-            Node parent = new Node('\0', left.freq + right.freq, left ,right);
+            Node parent = new Node('\0', left.freq + right.freq, left, right);
             pq.add(parent);
         }
         root = pq.poll();
